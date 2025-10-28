@@ -1,0 +1,85 @@
+library(tidyverse)
+
+
+summary(trend_summer_2025)
+df_climate <- trend_summer_2025 %>%
+  filter(!is.na(SP_CODE)) |>
+  #group_by(Dendro_number, PLOT, Stress_Level) %>%   # or Plot_Name if available
+  group_by(Dendro_number,PLOT, Trend) %>%
+  summarise(
+    MAT = mean((min_temp + max_temp)/2, na.rm = TRUE),  # mean annual temperature
+    MAP = mean(precipitation, na.rm = TRUE),             # total annual precipitation
+    MET = mean(evapotranspiration, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Example: 14 shapes for 14 species
+species_shapes <- 1:19  # or pick your preferred shape codes
+# Define 11 colors (one for each level)
+my_colors_2 <- c(
+  "#E69F00", # orange
+  "#56B4E9", # sky blue
+  "#009E73", # bluish green
+  "#F0E442", # yellow
+  "#0072B2", # blue
+  "#D55E00", # vermillion
+  "#CC79A7", # reddish purple
+  "#999999", # grey
+  "#F0A3FF", # pink
+  "#A9D18E", # light green
+  "#FFA07A", # salmon
+  "#8C564B", # brown
+  "#1F77B4", # muted blue
+  "#FF7F0E"  # muted orange
+)
+
+# Define 11 colors (one for each level)
+my_colors_3 <- c(
+  "#ff0000", "#ff4000", "#ff8000", "#ffbf00", "#ffff00",
+  "#bfff00", "#80ff00", "#40ff00", "#00ff00", "#00ff80", "#00ffbf"
+)
+
+df_climate <- df_climate %>%
+  filter(Trend != "not enough data") |>
+  #mutate(Stress_Level = factor(Stress_Level)) |>
+  mutate(Trend = factor(Trend))
+
+ggplot(df_climate, aes(x = MAP, y = MAT)) +
+  geom_point(
+    #aes(color = PLOT, shape = Trend),
+    aes(color = Trend),
+    size = 5,
+    #alpha = 0.7
+    stroke = 1.5,   # thicker outlines for shapes
+    alpha = 0.8
+  ) +
+  scale_color_manual(
+    #values = colorRampPalette(brewer.pal(12, "Set3"))(14), # 14 distinct colors
+    values = my_colors_2,
+    name = "TWD Trend",
+    #name = "plot"
+  )  +
+  #scale_shape_manual(
+   # values = species_shapes,
+  #  name = "TWD Trend"
+ # ) +
+  labs(
+    x = "MAP (mm)",
+    y = "MAT (°C)",
+    #title = "Climate at selected sites (averaged over time)"
+    title = "Variation in tree water deficit across climatic gradients"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 14),
+    axis.text = element_text(face = "bold", size = 12, color = "black"),
+    legend.title = element_text(face = "bold", size = 12),
+    legend.text = element_text(face = "bold", size = 10),
+    #axis.line = element_line(color = "black", linewidth = 0.8),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5)
+  )
+
+ggsave("FIG_1B.png", width = 15, height = 10, units = "in", limitsize = FALSE)
+

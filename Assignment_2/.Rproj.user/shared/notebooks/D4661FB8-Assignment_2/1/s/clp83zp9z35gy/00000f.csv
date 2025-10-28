@@ -1,0 +1,8 @@
+"0","library(broom)"
+"0","library(ggplot2)"
+"0",""
+"0","# Extract tidy summary and exponentiate (to get odds ratios)"
+"0","coef_data <- tidy(model_polr, conf.int = TRUE, exponentiate = TRUE)"
+"2","Error in if (all(pr > 0)) -sum(wt * log(pr)) else Inf : 
+  missing value where TRUE/FALSE needed
+"

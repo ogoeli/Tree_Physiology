@@ -1,0 +1,8 @@
+"0","#full model with all fixed and random effects"
+"0","#Check for assumption violations:"
+"0","#- Homogeneity of residuals."
+"0","#- Normality."
+"0","#- Outliers."
+"0","plot(resid(M1.nested) ~ model_data$z_LWC, xlab = ""LWC"", ylab = ""Normalized residuals"")+abline(h = 0, lty = 2)"
+"1","integer(0)
+"

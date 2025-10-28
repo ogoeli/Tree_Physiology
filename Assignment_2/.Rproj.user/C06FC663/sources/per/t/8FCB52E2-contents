@@ -1,0 +1,61 @@
+library(tidyverse)
+
+
+summary(trend_summer_2025)
+df_climate <- trend_summer_2025 %>%
+  filter(!is.na(SP_CODE)) |>
+  group_by(Dendro_number, SP_CODE, PLOT) %>%   # or Plot_Name if available
+  summarise(
+    MAT = mean((min_temp + max_temp)/2, na.rm = TRUE),  # mean annual temperature
+    MAP = mean(precipitation, na.rm = TRUE),             # total annual precipitation
+    MET = mean(evapotranspiration, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Example: 14 shapes for 14 species
+species_shapes <- 1:19  # or pick your preferred shape codes
+# Define 11 colors (one for each level)
+my_colors_2 <- c(
+  "#E69F00", # orange
+  "#56B4E9", # sky blue
+  "#009E73", # bluish green
+  "#F0E442", # yellow
+  "#0072B2", # blue
+  "#D55E00", # vermillion
+  "#CC79A7", # reddish purple
+  "#999999", # grey
+  "#F0A3FF", # pink
+  "#A9D18E", # light green
+  "#FFA07A", # salmon
+  "#8C564B", # brown
+  "#1F77B4", # muted blue
+  "#FF7F0E"  # muted orange
+)
+
+
+
+ggplot(df_climate, aes(x = MAP, y = MAT)) +
+  geom_point(
+    aes(color = PLOT, shape = SP_CODE),
+    size = 5,
+    #alpha = 0.7
+  ) +
+  scale_color_manual(
+    #values = colorRampPalette(brewer.pal(12, "Set3"))(14), # 14 distinct colors
+    values = my_colors_2,
+    name = "Plot"
+  )  +
+  scale_shape_manual(
+    values = species_shapes,
+    name = "Species code"
+  ) +
+  labs(
+    x = "MAP (mm)",
+    y = "MAT (°C)",
+    title = "Climate at selected sites (averaged over time)"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(hjust = 0.5)
+  )

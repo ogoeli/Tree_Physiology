@@ -1,0 +1,7 @@
+"0",""
+"0","##model from model selection"
+"0","#Check for assumption violations:"
+"0","#- Homogeneity of residuals."
+"0","#- Normality."
+"0","#- Outliers."
+"0","plot(lme_final_2)"

@@ -1,0 +1,6 @@
+"0",""
+"0","    # Extract random effects (species-specific deviations for each trait)"
+"0","    ranef_species <- ranef(model_clmm)$SP_CODE"
+"0",""
+"0","    # This gives you a table of how each species deviates from the overall trait effect"
+"0","    ranef_species"
