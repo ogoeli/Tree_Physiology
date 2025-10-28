@@ -123,6 +123,7 @@ ggpairs(
 
 model_data$Stress_Level <- factor(model_data$Stress_Level, ordered = TRUE)
 gls_2 <- gls(Slope~z_WP + z_DBH + z_LWC + z_LDMC + z_Height + Stress_Level + SP_CODE, data = model_data )
+check_model(gls_2)
 #summary(gls_2)
 H2 <- lme(
   Slope ~ z_WP + z_DBH + z_LWC + z_LDMC + z_Height + Stress_Level + SP_CODE,
@@ -133,14 +134,17 @@ H2 <- lme(
 )
 summary(H2)
 tab_model(H2)
+check_model(H2)
 
 #summary(M1.nested)
 lme2_ml <- update(H2, method = "ML")
 drop1(lme2_ml, test = "Chisq")
 #Refit with REML and validate
 #After selecting the optimal fixed structure, refit the model using REML for final coefficient estimates.
-lme_final_2 <- update(M1.Tree_random, fixed = Slope ~ z_LWC + Stress_Level + SP_CODE,
+lme_final_2 <- update(lme2_ml, fixed = Slope ~ z_LWC + Stress_Level + SP_CODE,
                       method = "REML")
 summary(lme_final_2)
 tab_model(lme_final_2, show.se=TRUE)
 check_model(lme_final_2)
+
+

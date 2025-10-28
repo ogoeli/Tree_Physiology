@@ -48,13 +48,26 @@ M1.TWD <- lme(
     z_evapotranspiration + z_precipitation + z_vpd,
   random = ~1 | Dendro_number,   # random intercept per tree
   method = "REML",
+  weights = varPower(),
   na.action = na.omit,
   data = trend_summer_2025
 )
 summary(M1.TWD)
 TWD_png <- tab_model(M1.TWD)
 TWD_png
-
+check_model(M1.TWD)
+##log response to validate assumpuation
+M1.TWD_log <- lme(
+  log(TWD + 1) ~ z_max_temp + z_soil_moisture_am +
+    z_evapotranspiration + z_precipitation + z_vpd,
+  random = ~1 | Dendro_number,
+  weights = varPower(),  # variance changes with fitted values
+  data = trend_summer_2025,
+  method = "REML",
+  na.action = na.omit
+)
+check_model(M1.TWD_log)
+tab_model(M1.TWD_log)
 
 #DV
 M1.DV <- lme(
@@ -66,9 +79,22 @@ M1.DV <- lme(
   data = trend_summer_2025
 )
 summary(M1.DV)
-
 DV_png <- tab_model(M1.DV)
 DV_png
+check_model(M1.DV)
+##log response to validate assumpuation
+M1.DV_log <- lme(
+  log(DV + 1) ~ z_max_temp + z_soil_moisture_am +
+    z_evapotranspiration + z_precipitation + z_vpd,
+  random = ~1 | Dendro_number,
+  weights = varPower(),  # variance changes with fitted values
+  data = trend_summer_2025,
+  method = "REML",
+  na.action = na.omit
+)
+check_model(M1.DV_log)
+summary(M1.DV_log)
+tab_model(M1.DV_log)
 
 
 ##look at how the species and plot play a role in TWD
@@ -87,6 +113,7 @@ M2_TWD <- lme(TWD ~ (z_max_temp + z_soil_moisture_am +
               na.action = na.omit)
 summary(M2_TWD)
 tab_model(M2_TWD)
+check_model(M2_TWD)
 # Prepare the table
 sig_table <- summary(M2_TWD)$tTable %>%
   as_tibble(rownames = "variable") %>%
@@ -127,6 +154,7 @@ M3_TWD <- lme(TWD ~ (z_max_temp + z_soil_moisture_am +
               na.action = na.omit)
 summary(M3_TWD)
 tab_model(M3_TWD)
+check_model(M3_TWD)
 # Prepare the table
 sig_table <- summary(M3_TWD)$tTable %>%
   as_tibble(rownames = "variable") %>%
