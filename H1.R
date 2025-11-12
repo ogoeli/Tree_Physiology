@@ -48,8 +48,7 @@ M1.TWD <- lme(
     z_evapotranspiration + z_precipitation + z_vpd,
   random = ~1 | Dendro_number,   # random intercept per tree
   method = "REML",
-  weights = varPower(),
-  na.action = na.omit,
+ na.action = na.omit,
   data = trend_summer_2025
 )
 summary(M1.TWD)
